@@ -17,14 +17,15 @@ import sys
 from getpass import getpass
 import User_Input
 from collections import defaultdict
+from pyvirtualdisplay import Display
 
-fabirc_user = os.getenv('FABIRCUSER')
-fabirc_password = os.getenv('FABI
+fabirc_user = os.getenv('FABRICUSER')
+fabirc_password = os.getenv('FABRICPASSWORD')
 
 
 github_account = fabirc_user
 github_passwd = fabirc_password
-
+print('MarkTest ' + github_account)
 
 '''原始存放的資料'''
 Crash = []
@@ -89,7 +90,9 @@ RecentActivityDict = {}
 
 class GithubLogin(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Firefox(executable_path='/Users/mark/Downloads/geckodriver')
+        self.display = Display(visible=0, size=(800,600))
+        self.display.start()
+        self.driver = webdriver.Firefox(executable_path='./geckodriver')
         self.driver.implicitly_wait(30)
         self.base_url = "https://www.fabric.io"
         self.verificationErrors = []
@@ -465,6 +468,7 @@ class GithubLogin(unittest.TestCase):
 
     def tearDown(self):
         self.driver.quit()
+        self.display.stop()
 
 if __name__ == "__main__":
     unittest.main()
