@@ -40,6 +40,10 @@ Android = {"default_status": "Open", "default_owner": "Fate", "spreadsheet_id": 
 Test = {"spreadsheet_id": "1Gx_2izYogh-0PgEej-EtGJrYzUaL_Ci5N4OH0bQLblc", "sheet_id_all": "845833450", "sheet_id_summary": "362639746"}
 
 
+def PATH(p):
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), p))
+
+
 def get_credentials():
     """Gets valid user credentials from storage.
 
@@ -182,9 +186,9 @@ def get_parameter(para):
 def user_input_data(u_input):
     config = get_parameter(u_input)
     print(config)
-    file = open('User_Input.py', "w")
+    file = open('./User_Input.py', "w")
     file.close()
-    file = open('User_Input.py', "a")
+    file = open('./User_Input.py', "a")
     file.write('PlatformName = ' + '\'' + config['plat'] + '\'' + '\n')
     file.write('Top_build = ' + str(config['top']) + '\n')
     file.write('Version = ' + str(config['ver']) + '\n')
