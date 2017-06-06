@@ -24,7 +24,14 @@ from oauth2client.file import Storage
 
 try:
     import argparse
-    flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+    flags = argparse.ArgumentParser(prog='Jenkins_gen_config', parents=[tools.argparser])
+    flags.add_argument('-p', '--platform', nargs=1, action='store', choices=['iOS', 'Android'], default='iOS',
+                        help='Platform selection: iOS or AND, default=iOS')
+    flags.add_argument('-c', '--criteria', nargs=1, action='store', default=100,
+                        help='Warning color, if above this num, text will be filled in red color, default=100',
+                        type=int)
+    flags.add_argument('-t', '--test', nargs=1, action='store', choices=[0, 1], default=0,
+                        help='0 for official spreadsheet, 1 for test spreadsheet, default=0', type=int)
 except ImportError:
     flags = None
 
@@ -139,18 +146,9 @@ def get_parameter(para):
     range_iOS = 'PG_iOS!A:F'
 
     # parameter deploy
-    for i in range(0, len(para), 1):
-        if para[i] == '-platform':
-            PlatformName = para[i+1]
-        elif para[i] == '--top-build':
-            Top_build.append(para[i+1])
-        elif para[i] == '-version':
-            Version.extend(para[i+1].split(','))
-            Version.append('All Version')
-        elif para[i] == '-criteria':
-            Criteria_count += int(para[i+1])
-        elif para[i] == '-test':
-            test_flag += int(para[i+1])
+    PlatformName = para.platform[0]
+    Criteria_count = para.criteria[0]
+    test_flag = para.test[0]
 
     # auto get latest 5 versions from PG_發版紀錄 spreadsheet
     if Top_build == [] or Version == []:
@@ -184,6 +182,7 @@ def get_parameter(para):
 
 
 def user_input_data(u_input):
+    print(u_input)
     config = get_parameter(u_input)
     print(config)
     file = open('./User_Input.py', "w")
@@ -201,4 +200,4 @@ def user_input_data(u_input):
     file.close()
 
 
-user_input_data(sys.argv)
+user_input_data(flags.parse_args())
