@@ -24,7 +24,7 @@ from oauth2client.file import Storage
 
 try:
     import argparse
-    flags = argparse.ArgumentParser(prog='Jenkins_gen_config', parents=[tools.argparser])
+    flags = argparse.ArgumentParser(prog=['Jenkins_gen_config'], parents=[tools.argparser])
     flags.add_argument('-p', '--platform', nargs=1, action='store', choices=['iOS', 'Android'], default='iOS',
                         help='Platform selection: iOS or AND, default=iOS')
     flags.add_argument('-c', '--criteria', nargs=1, action='store', default=100,
@@ -80,15 +80,24 @@ def get_credentials():
     return credentials
 
 
+def get_actual_version_on_Fabric(raw_data):
+    temp = raw_data[:3]
+    temp_1 = temp[:1]
+    temp_2 = temp[-2:]
+    data = temp_1 + '.' + temp_2 + ' (' + raw_data + ')'
+    print(data)
+    return data
+
+
 def get_Android_sheet_version(spreadsheet_id, sheet_range, service):
     data = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=sheet_range).execute()
     Version = []
     count = 0
-    Version.append(data['values'][len(data['values']) - 1][2])
+    Version.append(get_actual_version_on_Fabric(data['values'][len(data['values']) - 1][2]))
     for i in range(len(data['values'])-2, 0, -1):
         try:
             if data['values'][i][5] == '100%':
-                Version.append(data['values'][i][2])
+                Version.append(get_actual_version_on_Fabric(data['values'][i][2]))
                 count += 1
             if count == 4:
                 break
@@ -120,11 +129,11 @@ def get_iOS_sheet_version(spreadsheet_id, sheet_range, service):
 
 
 def get_parameter(para):
-    PlatformName = 'iOS'
+    PlatformName = ['iOS']
     Top_build = []
     Version = []
-    Criteria_count = 0
-    test_flag = 0
+    Criteria_count = [100]
+    test_flag = [0]
     Default_status = 'Open'
     Default_owner = 'Keith'
     spreadsheet_id = '1Gx_2izYogh-0PgEej-EtGJrYzUaL_Ci5N4OH0bQLblc'
