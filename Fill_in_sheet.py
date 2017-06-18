@@ -115,10 +115,10 @@ def sheet_all_modify_handler(data, spreadsheet_id, sheet_range, service):
 def fabric_crashlytics_uploader(duplicate_list, data, spreadsheet_id, sheet_range, service):
     for i in range(0, len(data['data']), 1):
         ver = data['data'][i]['Version']
-        if User_Input.PlatformName is 'Android':
-            ver_begin = ver.index('(')
-            ver_last = ver.index(')')
-            ver = ver[ver_begin+1:ver_last]
+        # if User_Input.PlatformName is 'Android':
+            # ver_begin = ver.index('(')
+            # ver_last = ver.index(')')
+            # ver = ver[ver_begin+1:ver_last]
         if ver == User_Input.Top_build[0] and i not in duplicate_list:
             num = data['data'][i]['IssueNumber']
             url = data['data'][i]['URL']
