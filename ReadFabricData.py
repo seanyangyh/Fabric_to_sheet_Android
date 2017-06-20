@@ -448,9 +448,9 @@ class GithubLogin(unittest.TestCase):
             SelectVersionA.pop()
 
         # 讀取 All Verison
-        # print("你選擇的版本:\nAll Version")
-        # self.ClearSelectIcon()
-        # self.ReadAllUserSessions()
+        print("你選擇的版本:\nAll Version")
+        self.ClearSelectIcon()
+        self.ReadAllUserSessions()
 
         # 查詢前幾版的崩潰狀況
         self.ListToJsonFile_Crash('Fabric.json')

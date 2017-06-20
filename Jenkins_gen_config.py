@@ -104,7 +104,7 @@ def get_Android_sheet_version(spreadsheet_id, sheet_range, service):
         except:
             continue
 
-    Version.append('All Version')
+    # Version.append('All Version')
     print(Version)
     return Version
 
@@ -123,7 +123,7 @@ def get_iOS_sheet_version(spreadsheet_id, sheet_range, service):
         except:
             continue
 
-    Version.append('All Version')
+    # Version.append('All Version')
     print(Version)
     return Version
 
