@@ -1,9 +1,0 @@
-PlatformName = 'iOS'
-Top_build = ['6.1.70.19']
-Version = ['6.1.70.19', '6.1.60.26', '6.1.50.18', '6.1.40.19', '6.1.30.22', 'All Version']
-Criteria_count = 100
-Default_status = 'Open'
-Default_owner = 'Keith'
-spreadsheet_id = '1ex2ovtXCVkZWuyqZi7awUYYxpK-uxioS-rOdyI6N_8E'
-sheet_id_all = '1927443904'
-sheet_id_summary = '670362750'

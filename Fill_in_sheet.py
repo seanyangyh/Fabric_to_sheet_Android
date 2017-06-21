@@ -74,6 +74,13 @@ def fabric_crash_rate_uploader(data, date, spreadsheet_id, sheet_range, service)
         append_sheet = sheet_summary_append_handler(date, User_Input.Version[i], crash_uv, crash_pv, spreadsheet_id, sheet_range, service)
         print(append_sheet)
 
+    # append All Versions data
+    crash_uv = data['All Version']['CRASH-FREE USERS']
+    crash_pv = data['All Version']['CRASH-FREE SESSIONS']
+    append_sheet = sheet_summary_append_handler(date, 'All Versions', crash_uv, crash_pv, spreadsheet_id,
+                                                sheet_range, service)
+    print(append_sheet)
+
 
 def sheet_summary_append_handler(date, ver, crash_uv, crash_pv, spreadsheet_id, sheet_range, service):
     value_range_body = {
@@ -115,10 +122,6 @@ def sheet_all_modify_handler(data, spreadsheet_id, sheet_range, service):
 def fabric_crashlytics_uploader(duplicate_list, data, spreadsheet_id, sheet_range, service):
     for i in range(0, len(data['data']), 1):
         ver = data['data'][i]['Version']
-        # if User_Input.PlatformName is 'Android':
-            # ver_begin = ver.index('(')
-            # ver_last = ver.index(')')
-            # ver = ver[ver_begin+1:ver_last]
         if ver == User_Input.Top_build[0] and i not in duplicate_list:
             num = data['data'][i]['IssueNumber']
             url = data['data'][i]['URL']
