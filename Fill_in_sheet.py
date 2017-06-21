@@ -77,8 +77,7 @@ def fabric_crash_rate_uploader(data, date, spreadsheet_id, sheet_range, service)
     # append All Versions data
     crash_uv = data['All Version']['CRASH-FREE USERS']
     crash_pv = data['All Version']['CRASH-FREE SESSIONS']
-    append_sheet = sheet_summary_append_handler(date, 'All Versions', crash_uv, crash_pv, spreadsheet_id,
-                                                sheet_range, service)
+    append_sheet = sheet_summary_append_handler(date, 'All Versions', crash_uv, crash_pv, spreadsheet_id, sheet_range, service)
     print(append_sheet)
 
 
@@ -119,10 +118,14 @@ def sheet_all_modify_handler(data, spreadsheet_id, sheet_range, service):
     return result
 
 
-def fabric_crashlytics_uploader(duplicate_list, data, spreadsheet_id, sheet_range, service):
+def fabric_crashlytics_uploader(today, duplicate_list, data, spreadsheet_id, sheet_range, service):
+    first_time_count = 0
     for i in range(0, len(data['data']), 1):
         ver = data['data'][i]['Version']
         if ver == User_Input.Top_build[0] and i not in duplicate_list:
+            first_time_count += 1
+            if first_time_count == 1:
+                sheet_all_append_date(today.strftime("%Y/%m/%d"), spreadsheet_id, sheet_range, service)
             num = data['data'][i]['IssueNumber']
             url = data['data'][i]['URL']
             crash_count = data['data'][i]['Crash'] + " / " + data['data'][i]['User']
@@ -143,10 +146,10 @@ def sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, sprea
     return result
 
 
-def sheet_all_append_version(ver, spreadsheet_id, sheet_range, service):
+def sheet_all_append_date(date, spreadsheet_id, sheet_range, service):
     value_range_body = {
         'values': [
-            [ver],
+            [date],
         ]
     }
     result = service.spreadsheets().values().append(spreadsheetId=spreadsheet_id, range=sheet_range,
@@ -307,23 +310,13 @@ def main():
     crashlytics_dict = json_parser(raw_data_crashlytics)
     print(crashlytics_dict)
 
-    # find fabric num in column A or not
-    is_version_exist = False
+    # get column a data, prepare for column a and json comparison via modifier
     column_a_data = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id, range=range_all_column_a).execute()
     print(column_a_data)
-    for i in range(0, len(column_a_data['values']), 1):
-        # print(column_a_data['values'][i])
-        if User_Input.Top_build == column_a_data['values'][i]:
-            is_version_exist = True
-            break
 
-    # if version exist then update crash/user into sheet, otherwise upload crashlytics data to sheet
-    if is_version_exist is True:
-        duplicated_list = fabric_crashlytics_modifier(column_a_data, crashlytics_dict, spreadsheet_id, range_all_column_d, service)
-        fabric_crashlytics_uploader(duplicated_list, crashlytics_dict, spreadsheet_id, range_all, service)
-    else:
-        sheet_all_append_version(User_Input.Top_build[0], spreadsheet_id, range_all, service)
-        fabric_crashlytics_uploader([], crashlytics_dict, spreadsheet_id, range_all, service)
+    # upload detail crash data to All sheet
+    duplicated_list = fabric_crashlytics_modifier(column_a_data, crashlytics_dict, spreadsheet_id, range_all_column_d, service)
+    fabric_crashlytics_uploader(today, duplicated_list, crashlytics_dict, spreadsheet_id, range_all, service)
 
     # get Summary sheet column D data to find crash rate above 0.3% and mark as red
     summary_column_d_data = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id,
