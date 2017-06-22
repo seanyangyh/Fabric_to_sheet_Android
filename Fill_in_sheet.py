@@ -131,14 +131,28 @@ def fabric_crashlytics_uploader(today, duplicate_list, data, spreadsheet_id, she
             crash_count = data['data'][i]['Crash'] + " / " + data['data'][i]['User']
             title = data['data'][i]['IssutTitle']
             sub_title = data['data'][i]['IssueSubtitle']
-            append_sheet = sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, spreadsheet_id, sheet_range, service)
+            h_occurrences = history_occurrences_calculator(data['data'][i]['RecentActivity'])
+            append_sheet = sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, h_occurrences, spreadsheet_id, sheet_range, service)
             print(append_sheet)
 
 
-def sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, spreadsheet_id, sheet_range, service):
+def history_occurrences_calculator(RecentActivity):
+    temp_list_count = ''
+    ver = ''
+    for i in range(0, len(User_Input.Version), 1):
+        for j in range(0, len(RecentActivity), 1):
+            if User_Input.Version[i] == RecentActivity[j]['Version']:
+                temp_list_count = temp_list_count + RecentActivity[j]['Occurrences'] + ', '
+                ver_last = User_Input.Version[i].index('(')
+                ver = ver + User_Input.Version[i][:ver_last - 1] + ', '
+
+    return ver[:-2] + ' : ' + temp_list_count[:-2]
+
+
+def sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, h_occurrences, spreadsheet_id, sheet_range, service):
     value_range_body = {
         'values': [
-            [num, ver, url, crash_count, User_Input.Default_owner, User_Input.Default_status, "", "", title, sub_title],
+            [num, ver, url, crash_count, User_Input.Default_owner, User_Input.Default_status, "", "", title, sub_title, h_occurrences],
         ]
     }
     result = service.spreadsheets().values().append(spreadsheetId=spreadsheet_id, range=sheet_range,
@@ -172,7 +186,7 @@ def sheet_all_fill_color_and_merge(row, spreadsheet_id, service):
                         "startRowIndex": row-1,
                         "endRowIndex": row,
                         "startColumnIndex": 0,
-                        "endColumnIndex": 10
+                        "endColumnIndex": 11
                     },
                     "cell": {
                         "userEnteredFormat": {
@@ -193,7 +207,7 @@ def sheet_all_fill_color_and_merge(row, spreadsheet_id, service):
                         "startRowIndex": row-1,
                         "endRowIndex": row,
                         "startColumnIndex": 0,
-                        "endColumnIndex": 10
+                        "endColumnIndex": 11
                     },
                     "mergeType": "MERGE_ROWS"
                 }
