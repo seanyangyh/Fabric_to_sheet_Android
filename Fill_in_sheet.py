@@ -130,7 +130,7 @@ def fabric_crashlytics_uploader(tf_today, today, duplicate_list, data, spreadshe
             num = data['data'][i]['IssueNumber']
             url = data['data'][i]['URL']
             crash_count = data['data'][i]['Crash'] + " / " + data['data'][i]['User']
-            title = data['data'][i]['IssutTitle']
+            title = data['data'][i]['IssueTitle']
             sub_title = data['data'][i]['IssueSubtitle']
             h_occurrences = history_occurrences_calculator(data['data'][i]['RecentActivity'])
             append_sheet = sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, h_occurrences, spreadsheet_id, sheet_range, service)

@@ -247,7 +247,7 @@ class GithubLogin(unittest.TestCase):
         IssueTitleTest = self.driver.find_elements_by_css_selector(".issue-title")
         for i in IssueTitleTest:
             IssueTitle.append(i.text)
-            IssueTitleTitle.append("IssutTitle")
+            IssueTitleTitle.append("IssueTitle")
         print("結束-->讀取Issue開頭")
         print("*"*10)
     def ReadIssueSubtitle(self):
