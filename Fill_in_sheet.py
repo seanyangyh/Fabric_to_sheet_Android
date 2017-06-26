@@ -118,13 +118,14 @@ def sheet_all_modify_handler(data, spreadsheet_id, sheet_range, service):
     return result
 
 
-def fabric_crashlytics_uploader(today, duplicate_list, data, spreadsheet_id, sheet_range, service):
+def fabric_crashlytics_uploader(tf_today, today, duplicate_list, data, spreadsheet_id, sheet_range, service):
     first_time_count = 0
     for i in range(0, len(data['data']), 1):
         ver = data['data'][i]['Version']
+        # h_occurrences = history_occurrences_calculator(data['data'][i]['RecentActivity'])
         if ver == User_Input.Top_build[0] and i not in duplicate_list:
             first_time_count += 1
-            if first_time_count == 1:
+            if first_time_count == 1 and tf_today is False:
                 sheet_all_append_date(today.strftime("%Y/%m/%d"), spreadsheet_id, sheet_range, service)
             num = data['data'][i]['IssueNumber']
             url = data['data'][i]['URL']
@@ -134,6 +135,14 @@ def fabric_crashlytics_uploader(today, duplicate_list, data, spreadsheet_id, she
             h_occurrences = history_occurrences_calculator(data['data'][i]['RecentActivity'])
             append_sheet = sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, h_occurrences, spreadsheet_id, sheet_range, service)
             print(append_sheet)
+
+
+def is_today_checker(today, sheet_range):
+    for i in range(0, len(sheet_range['values']), 1):
+        if sheet_range['values'][i][0] == today.strftime("%Y/%m/%d"):
+            return True
+
+    return False
 
 
 def history_occurrences_calculator(RecentActivity):
@@ -329,8 +338,9 @@ def main():
     print(column_a_data)
 
     # upload detail crash data to All sheet
+    is_today = is_today_checker(today, column_a_data)
     duplicated_list = fabric_crashlytics_modifier(column_a_data, crashlytics_dict, spreadsheet_id, range_all_column_d, service)
-    fabric_crashlytics_uploader(today, duplicated_list, crashlytics_dict, spreadsheet_id, range_all, service)
+    fabric_crashlytics_uploader(is_today, today, duplicated_list, crashlytics_dict, spreadsheet_id, range_all, service)
 
     # get Summary sheet column D data to find crash rate above 0.3% and mark as red
     summary_column_d_data = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id,
