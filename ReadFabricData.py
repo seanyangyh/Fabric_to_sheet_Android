@@ -481,6 +481,9 @@ class GithubLogin(unittest.TestCase):
             if GetGoodAdoptionURLTest[i] is 'Null':
                 GetUserNumberTest.append('Null')
             else:
+                self.display.stop()
+                self.display = Display(visible=0, size=(800, 600))
+                self.display.start()
                 self.driver.get(GetGoodAdoptionURLTest[i])
                 self.GetGoodAdoptionUserNumber()
             time.sleep(5)
