@@ -96,7 +96,7 @@ GetGoodAdoptionURLTest = []
 
 class GithubLogin(unittest.TestCase):
     def setUp(self):
-        self.display = Display(visible=0, size=(800,600))
+        self.display = Display(visible=1, size=(800, 600))
         self.display.start()
         self.driver = webdriver.Firefox(executable_path='./geckodriver')
         self.driver.implicitly_wait(30)
