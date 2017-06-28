@@ -482,7 +482,7 @@ class GithubLogin(unittest.TestCase):
                 GetUserNumberTest.append('Null')
             else:
                 # self.display = Display(visible=0, size=(800, 600))
-                self.display.start()
+                # self.display.start()
                 self.driver.get(GetGoodAdoptionURLTest[i])
                 self.GetGoodAdoptionUserNumber()
             time.sleep(5)
