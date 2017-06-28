@@ -44,6 +44,7 @@ IssueTitleTitle = []
 IssueSubtitleTitle = []
 TestAllTitle = []
 URLTitle = []
+GetUserNumberTest = []
 
 '''A代表再次重新放入新的字串'''
 IssueNumberA = []
@@ -87,6 +88,11 @@ RecentActivityVersionA = []
 
 RecentActivity = []
 RecentActivityDict = {}
+
+
+
+
+GetGoodAdoptionURLTest = []
 
 class GithubLogin(unittest.TestCase):
     def setUp(self):
@@ -247,7 +253,7 @@ class GithubLogin(unittest.TestCase):
         IssueTitleTest = self.driver.find_elements_by_css_selector(".issue-title")
         for i in IssueTitleTest:
             IssueTitle.append(i.text)
-            IssueTitleTitle.append("IssueTitle")
+            IssueTitleTitle.append("IssutTitle")
         print("結束-->讀取Issue開頭")
         print("*"*10)
     def ReadIssueSubtitle(self):
@@ -331,7 +337,11 @@ class GithubLogin(unittest.TestCase):
         User_Input.Version.append('All Version')
         itmes = 0
         Test = len(AllUserSessions)//2
+        User = len(GetUserNumberTest)
+
         for i in range(Test):
+            # 主要是新增崩潰量 因為一次抓取兩個參數值
+            # 一開始會先執行else部分之後都會去執行i >=1
             if i >= 1:
                 itmes += 1
                 AllUserSessionsA.append(AllUserSessions[i + itmes])
@@ -343,6 +353,16 @@ class GithubLogin(unittest.TestCase):
                 AllUserSessionsNameA.append(AllUserSessionsName[i])
                 AllUserSessionsA.append(AllUserSessions[i + 1])
                 AllUserSessionsNameA.append(AllUserSessionsName[i + 1])
+
+            # 主要是判斷使用者的人數 如果超過某區塊會將使用者人數設定為Null.
+            if i > (User-1):
+                # AllUserSessionsA.append('Null')
+                # AllUserSessionsNameA.append('User')
+                pass
+            else:
+                AllUserSessionsA.append(GetUserNumberTest[i])
+                AllUserSessionsNameA.append('User')
+
             Sessions = OrderedDict(zip(AllUserSessionsNameA, AllUserSessionsA))
             SessionsA.append(Sessions)
 
@@ -424,6 +444,7 @@ class GithubLogin(unittest.TestCase):
         print("*" * 10)
         print("請查看" + 'Top_build_Fabric.json')
 
+
     def test_Carsh_Top(self):
         print('Get crash-free session only')
 
@@ -445,15 +466,46 @@ class GithubLogin(unittest.TestCase):
             self.EnterVserion(SelectVersionA)  # Sean
             self.ClearSelectIcon()
             self.ReadAllUserSessions()
+            self.GetGoodAdoptionURLfunction()
+
             SelectVersionA.pop()
 
-        # 讀取 All Verison
+            # 讀取 All Verison
         print("你選擇的版本:\nAll Version")
         self.ClearSelectIcon()
         self.ReadAllUserSessions()
+        self.GetGoodAdoptionURLfunction()
+
+        for i in range(len(GetGoodAdoptionURLTest)):
+
+            if GetGoodAdoptionURLTest[i] is 'Null':
+                GetUserNumberTest.append('Null')
+            else:
+                driver.get(GetGoodAdoptionURLTest[i])
+                self.GetGoodAdoptionUserNumber()
 
         # 查詢前幾版的崩潰狀況
         self.ListToJsonFile_Crash('Fabric.json')
+
+
+    def GetGoodAdoptionUserNumber(self):
+        GetUserNumber = self.driver.find_elements_by_css_selector(".coverage-section .flex-1 .flex-1 .large")
+        x = 0
+        for i in GetUserNumber:
+            x += 1
+            if x == 1:
+                GetUserNumberTest.append(str(i.text))
+
+
+    def GetGoodAdoptionURLfunction(self):
+        GetGoodAdoptionURL = self.driver.find_elements_by_css_selector('.flex-1 .answers-link')
+        TestList = []
+        # 判斷如果沒有連結會自動帶入Null
+        if GetGoodAdoptionURL == TestList:
+            GetGoodAdoptionURLTest.append('Null')
+        for i in GetGoodAdoptionURL:
+            GetGoodAdoptionURLTest.append(i.get_attribute("href"))
+
 
     def DefaultValue(self):
         global RecentActivityOccurrencesA, RecentActivityVersionA, RecentActivityOccurrences, RecentActivityVersion, \
@@ -469,6 +521,7 @@ class GithubLogin(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
         self.display.stop()
+
 
 if __name__ == "__main__":
     unittest.main()
