@@ -377,72 +377,72 @@ class GithubLogin(unittest.TestCase):
         print("請查看" + FileName)
 
 
-    def test_Read_Fabirc(self):
-        print('Top build version query raw data')
-
-        driver = self.driver
-        driver.get(self.base_url + "/login")
-
-        driver.find_element_by_id("email").clear()
-        driver.find_element_by_id("email").send_keys(github_account)
-        driver.find_element_by_id("password").clear()
-        driver.find_element_by_id("password").send_keys(github_passwd)
-        driver.find_element_by_class_name("sign-in").click()
-        time.sleep(5)
-
-        # iOS or Android
-        self.Platform(PlatformName)  # Sean
-        self.ClickCarshlytics()
-        self.EnterVserion(Top_build)  # Sean
-        self.ClearSelectIcon()
-        self.SelectAll()
-        self.ReadAllUserSessions()
-        self.MoveWeb()
-        self.ReadUrl()
-        self.ReadCrashNumber()
-        self.ReadUserNumber()
-        self.ReadVersionNumber()
-        self.ReadIssueNumber()
-        self.ReadIssueTitle()
-        self.ReadIssueSubtitle()
-        self.ReadAllNumber()
-        self.ListToJsonFile('Top_build_Fabric.json')
-
-        print("Get Recent Activity")
-        time.sleep(2)
-        ADJson = self.JSonFile('Top_build_Fabric.json')
-
-        # driver.get(ADJson['data'][0]['URL'])
-        # self.Get_RecentActivity()
-
-        for i in range(len(ADJson['data'])):
-            driver.get(ADJson['data'][i]['URL'])
-            self.Get_RecentActivity()
-
-            for j in range(len(RecentActivityOccurrences)):
-                RecentActivityOccurrencesA.append(RecentActivityOccurrences[j])
-                RecentActivityVersionA.append(RecentActivityVersion[j])
-
-                '''將兩個字串合併成字典'''
-                RecentActivityOccurrencesDict = OrderedDict(
-                    zip(RecentActivityOccurrencesTitle, RecentActivityOccurrencesA))
-                RecentActivityVersionDict = OrderedDict(zip(RecentActivityVersionTitle, RecentActivityVersionA))
-
-                '''每次字典更新新增一筆'''
-                RecentActivityVersionDict.update(RecentActivityOccurrencesDict)
-                RecentActivity.append(RecentActivityVersionDict)
-                RecentActivityDict['RecentActivity'] = RecentActivity
-                ADJson['data'][i].update(RecentActivityDict)
-
-
-                # RecentActivityDict = {}
-
-        with open('Top_build_Fabric.json', 'w') as f:
-            json.dump(ADJson, f)
-        f.close()
-        print("結束-->將資料轉成Json")
-        print("*" * 10)
-        print("請查看" + 'Top_build_Fabric.json')
+    # def test_Read_Fabirc(self):
+    #     print('Top build version query raw data')
+    #
+    #     driver = self.driver
+    #     driver.get(self.base_url + "/login")
+    #
+    #     driver.find_element_by_id("email").clear()
+    #     driver.find_element_by_id("email").send_keys(github_account)
+    #     driver.find_element_by_id("password").clear()
+    #     driver.find_element_by_id("password").send_keys(github_passwd)
+    #     driver.find_element_by_class_name("sign-in").click()
+    #     time.sleep(5)
+    #
+    #     # iOS or Android
+    #     self.Platform(PlatformName)  # Sean
+    #     self.ClickCarshlytics()
+    #     self.EnterVserion(Top_build)  # Sean
+    #     self.ClearSelectIcon()
+    #     self.SelectAll()
+    #     self.ReadAllUserSessions()
+    #     self.MoveWeb()
+    #     self.ReadUrl()
+    #     self.ReadCrashNumber()
+    #     self.ReadUserNumber()
+    #     self.ReadVersionNumber()
+    #     self.ReadIssueNumber()
+    #     self.ReadIssueTitle()
+    #     self.ReadIssueSubtitle()
+    #     self.ReadAllNumber()
+    #     self.ListToJsonFile('Top_build_Fabric.json')
+    #
+    #     print("Get Recent Activity")
+    #     time.sleep(2)
+    #     ADJson = self.JSonFile('Top_build_Fabric.json')
+    #
+    #     # driver.get(ADJson['data'][0]['URL'])
+    #     # self.Get_RecentActivity()
+    #
+    #     for i in range(len(ADJson['data'])):
+    #         driver.get(ADJson['data'][i]['URL'])
+    #         self.Get_RecentActivity()
+    #
+    #         for j in range(len(RecentActivityOccurrences)):
+    #             RecentActivityOccurrencesA.append(RecentActivityOccurrences[j])
+    #             RecentActivityVersionA.append(RecentActivityVersion[j])
+    #
+    #             '''將兩個字串合併成字典'''
+    #             RecentActivityOccurrencesDict = OrderedDict(
+    #                 zip(RecentActivityOccurrencesTitle, RecentActivityOccurrencesA))
+    #             RecentActivityVersionDict = OrderedDict(zip(RecentActivityVersionTitle, RecentActivityVersionA))
+    #
+    #             '''每次字典更新新增一筆'''
+    #             RecentActivityVersionDict.update(RecentActivityOccurrencesDict)
+    #             RecentActivity.append(RecentActivityVersionDict)
+    #             RecentActivityDict['RecentActivity'] = RecentActivity
+    #             ADJson['data'][i].update(RecentActivityDict)
+    #
+    #
+    #             # RecentActivityDict = {}
+    #
+    #     with open('Top_build_Fabric.json', 'w') as f:
+    #         json.dump(ADJson, f)
+    #     f.close()
+    #     print("結束-->將資料轉成Json")
+    #     print("*" * 10)
+    #     print("請查看" + 'Top_build_Fabric.json')
 
 
     def test_Carsh_Top(self):
@@ -456,6 +456,7 @@ class GithubLogin(unittest.TestCase):
         driver.find_element_by_id("password").clear()
         driver.find_element_by_id("password").send_keys(github_passwd)
         driver.find_element_by_class_name("sign-in").click()
+        driver.save_screenshot('Mark.png')
         time.sleep(5)
         self.Platform(PlatformName)  # Sean
         self.ClickCarshlytics()
@@ -481,8 +482,6 @@ class GithubLogin(unittest.TestCase):
             if GetGoodAdoptionURLTest[i] is 'Null':
                 GetUserNumberTest.append('Null')
             else:
-                # self.display = Display(visible=0, size=(800, 600))
-                # self.display.start()
                 self.driver.get(GetGoodAdoptionURLTest[i])
                 self.GetGoodAdoptionUserNumber()
             time.sleep(5)
