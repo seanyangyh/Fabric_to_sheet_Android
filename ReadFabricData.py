@@ -483,6 +483,8 @@ class GithubLogin(unittest.TestCase):
                 GetUserNumberTest.append('Null')
             else:
                 self.driver.get(GetGoodAdoptionURLTest[i])
+                self.driver.maximize_window()
+                self.driver.save_screenshot('Mark.png')
                 self.GetGoodAdoptionUserNumber()
             time.sleep(5)
 
