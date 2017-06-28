@@ -483,9 +483,9 @@ class GithubLogin(unittest.TestCase):
                 GetUserNumberTest.append('Null')
             else:
                 self.driver.get(GetGoodAdoptionURLTest[i])
+                time.sleep(15)
                 self.driver.save_screenshot(str([i]) + 'Mark.png')
                 self.GetGoodAdoptionUserNumber()
-            time.sleep(5)
 
         # 查詢前幾版的崩潰狀況
         self.ListToJsonFile_Crash('Fabric.json')
