@@ -96,7 +96,7 @@ GetGoodAdoptionURLTest = []
 
 class GithubLogin(unittest.TestCase):
     def setUp(self):
-        self.display = Display(visible=0, size=(800, 600))
+        self.display = Display(visible=0, size=(1920, 1080))
         self.display.start()
         self.driver = webdriver.Firefox(executable_path='./geckodriver')
         self.driver.implicitly_wait(30)
@@ -483,8 +483,7 @@ class GithubLogin(unittest.TestCase):
                 GetUserNumberTest.append('Null')
             else:
                 self.driver.get(GetGoodAdoptionURLTest[i])
-                self.driver.maximize_window()
-                self.driver.save_screenshot('Mark.png')
+                self.driver.save_screenshot(str([i]) + 'Mark.png')
                 self.GetGoodAdoptionUserNumber()
             time.sleep(5)
 
