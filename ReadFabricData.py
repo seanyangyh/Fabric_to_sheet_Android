@@ -495,6 +495,8 @@ class GithubLogin(unittest.TestCase):
             x += 1
             if x == 1:
                 GetUserNumberTest.append(str(i.text))
+                print("get user")
+                print(str(i.text))
 
 
     def GetGoodAdoptionURLfunction(self):
@@ -505,6 +507,8 @@ class GithubLogin(unittest.TestCase):
             GetGoodAdoptionURLTest.append('Null')
         for i in GetGoodAdoptionURL:
             GetGoodAdoptionURLTest.append(i.get_attribute("href"))
+            print("get href")
+            print(i.get_attribute("href"))
 
 
     def DefaultValue(self):
