@@ -481,8 +481,9 @@ class GithubLogin(unittest.TestCase):
             if GetGoodAdoptionURLTest[i] is 'Null':
                 GetUserNumberTest.append('Null')
             else:
-                driver.get(GetGoodAdoptionURLTest[i])
+                self.driver.get(GetGoodAdoptionURLTest[i])
                 self.GetGoodAdoptionUserNumber()
+            time.sleep(5)
 
         # 查詢前幾版的崩潰狀況
         self.ListToJsonFile_Crash('Fabric.json')
