@@ -22,6 +22,8 @@ from pyvirtualdisplay import Display
 fabirc_user = os.getenv('FABRICUSER')
 fabirc_password = os.getenv('FABRICPASSWORD')
 
+pgk = os.getenv('PGPKG')
+
 
 github_account = fabirc_user
 github_passwd = fabirc_password
@@ -467,7 +469,7 @@ class GithubLogin(unittest.TestCase):
             self.EnterVserion(SelectVersionA)  # Sean
             self.ClearSelectIcon()
             self.ReadAllUserSessions()
-            self.GetGoodAdoptionURLfunction()
+            # self.GetGoodAdoptionURLfunction()
 
             SelectVersionA.pop()
 
@@ -475,31 +477,48 @@ class GithubLogin(unittest.TestCase):
         print("你選擇的版本:\nAll Version")
         self.ClearSelectIcon()
         self.ReadAllUserSessions()
-        self.GetGoodAdoptionURLfunction()
-
-        for i in range(len(GetGoodAdoptionURLTest)):
-
-            if GetGoodAdoptionURLTest[i] is 'Null':
-                GetUserNumberTest.append('Null')
-            else:
-                self.driver.get(GetGoodAdoptionURLTest[i])
-                time.sleep(15)
-                self.driver.save_screenshot(str([i]) + 'Mark.png')
-                self.GetGoodAdoptionUserNumber()
+        GetUserNumberTest.append("Null")
+        self.GetGoodAdoptionUserNumber()
+        # self.GetGoodAdoptionURLfunction()
+        #
+        # for i in range(len(GetGoodAdoptionURLTest)):
+        #
+        #     if GetGoodAdoptionURLTest[i] is 'Null':
+        #         GetUserNumberTest.append('Null')
+        #     else:
+        #         self.driver.get(GetGoodAdoptionURLTest[i])
+        #         time.sleep(15)
+        #         self.driver.save_screenshot(str([i]) + 'Mark.png')
+        #         self.GetGoodAdoptionUserNumber()
 
         # 查詢前幾版的崩潰狀況
         self.ListToJsonFile_Crash('Fabric.json')
 
 
     def GetGoodAdoptionUserNumber(self):
-        GetUserNumber = self.driver.find_elements_by_css_selector(".coverage-section .flex-1 .flex-1 .large")
-        x = 0
-        for i in GetUserNumber:
-            x += 1
-            if x == 1:
-                GetUserNumberTest.append(str(i.text))
-                print("get user")
-                print(str(i.text))
+        UserURL = "https://www.fabric.io/photogrid/android/apps/" + pgk + "/dashboard/latest_release/launch_status?build="
+
+
+        print("你選擇的版本:")
+        for i in range(len(Version)):
+            print(Version[i])
+
+        for i in range(len(Version)):
+            self.driver.get(UserURL + Version[i])
+            time.sleep(5)
+
+
+
+            GetUserNumber = self.driver.find_elements_by_css_selector(".coverage-section .flex-1 .flex-1 .large")
+            x = 0
+            for y in GetUserNumber:
+                x += 1
+                if x == 1:
+                    GetUserNumberTest.append(str(y.text))
+                    print("get user")
+                    print(str(y.text))
+
+            time.sleep(3)
 
 
     def GetGoodAdoptionURLfunction(self):
@@ -512,6 +531,8 @@ class GithubLogin(unittest.TestCase):
             GetGoodAdoptionURLTest.append(i.get_attribute("href"))
             print("get href")
             print(i.get_attribute("href"))
+
+
 
 
     def DefaultValue(self):
