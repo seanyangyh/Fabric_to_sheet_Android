@@ -477,7 +477,7 @@ class GithubLogin(unittest.TestCase):
         print("你選擇的版本:\nAll Version")
         self.ClearSelectIcon()
         self.ReadAllUserSessions()
-        GetUserNumberTest.append("Null")
+        # GetUserNumberTest.append("Null")
         self.GetGoodAdoptionUserNumber()
         # self.GetGoodAdoptionURLfunction()
         #
