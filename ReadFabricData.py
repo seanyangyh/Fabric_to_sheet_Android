@@ -500,11 +500,11 @@ class GithubLogin(unittest.TestCase):
 
 
         print("你選擇的版本:")
-        for i in range(len(Version)):
-            print(Version[i])
+        for i in range(len(SelectVersion)):
+            print(SelectVersion[i])
 
-        for i in range(len(Version)):
-            self.driver.get(UserURL + Version[i])
+        for i in range(len(SelectVersion)):
+            self.driver.get(UserURL + SelectVersion[i])
             time.sleep(5)
 
 
