@@ -522,6 +522,7 @@ class GithubLogin(unittest.TestCase):
             time.sleep(3)
 
         self.driver.get(UserURLAll)
+        time.sleep(5)
         GetUserNumber = self.driver.find_elements_by_css_selector(".coverage-section .flex-1 .flex-1 .large")
         x = 0
         for y in GetUserNumber:
