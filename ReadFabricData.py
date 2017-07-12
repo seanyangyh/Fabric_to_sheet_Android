@@ -510,6 +510,7 @@ class GithubLogin(unittest.TestCase):
 
 
             GetUserNumber = self.driver.find_elements_by_css_selector(".coverage-section .flex-1 .flex-1 .large")
+            print('GetUserNumber : ' + GetUserNumber)
             x = 0
             for y in GetUserNumber:
                 x += 1
