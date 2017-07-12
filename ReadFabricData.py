@@ -497,7 +497,7 @@ class GithubLogin(unittest.TestCase):
 
     def GetGoodAdoptionUserNumber(self):
         UserURL = "https://www.fabric.io/photogrid/android/apps/" + pgk + "/dashboard/latest_release/launch_status?build="
-
+        UserURLAll = "https://www.fabric.io/photogrid/android/apps/" + pgk + "/dashboard/latest_release/launch_status?build=all"
 
         print("你選擇的版本:")
         for i in range(len(SelectVersion)):
@@ -520,6 +520,16 @@ class GithubLogin(unittest.TestCase):
                     print(str(y.text))
 
             time.sleep(3)
+
+        self.driver.get(UserURLAll)
+        GetUserNumber = self.driver.find_elements_by_css_selector(".coverage-section .flex-1 .flex-1 .large")
+        x = 0
+        for y in GetUserNumber:
+            x += 1
+            if x == 1:
+                GetUserNumberTest.append(str(y.text))
+                print("get user")
+                print(str(y.text))
 
 
     def GetGoodAdoptionURLfunction(self):
