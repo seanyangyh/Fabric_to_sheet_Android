@@ -71,20 +71,22 @@ def fabric_crash_rate_uploader(data, date, spreadsheet_id, sheet_range, service)
     for i in range(0, len(User_Input.Version), 1):
         crash_uv = data[User_Input.Version[i]]['CRASH-FREE USERS']
         crash_pv = data[User_Input.Version[i]]['CRASH-FREE SESSIONS']
-        append_sheet = sheet_summary_append_handler(date, User_Input.Version[i], crash_uv, crash_pv, spreadsheet_id, sheet_range, service)
+        dau_data = data[User_Input.Version[i]]['User']
+        append_sheet = sheet_summary_append_handler(date, User_Input.Version[i], crash_uv, crash_pv, dau_data, spreadsheet_id, sheet_range, service)
         print(append_sheet)
 
     # append All Versions data
     crash_uv = data['All Version']['CRASH-FREE USERS']
     crash_pv = data['All Version']['CRASH-FREE SESSIONS']
-    append_sheet = sheet_summary_append_handler(date, 'All Versions', crash_uv, crash_pv, spreadsheet_id, sheet_range, service)
+    dau_data = data['All Version']['User']
+    append_sheet = sheet_summary_append_handler(date, 'All Versions', crash_uv, crash_pv, dau_data, spreadsheet_id, sheet_range, service)
     print(append_sheet)
 
 
-def sheet_summary_append_handler(date, ver, crash_uv, crash_pv, spreadsheet_id, sheet_range, service):
+def sheet_summary_append_handler(date, ver, crash_uv, crash_pv, dau, spreadsheet_id, sheet_range, service):
     value_range_body = {
         'values': [
-            [date, ver, crash_uv, crash_pv],
+            [date, ver, crash_uv, crash_pv, dau],
         ]
     }
     result = service.spreadsheets().values().append(spreadsheetId=spreadsheet_id, range=sheet_range,
@@ -99,7 +101,7 @@ def fabric_crashlytics_modifier(column_a_data, data, spreadsheet_id, service):
             if column_a_data['values'][i][0] == data['data'][j]['IssueNumber']:
                 ver = data['data'][j]['Version']
                 crash_count = data['data'][j]['Crash'] + " / " + data['data'][j]['User']
-                history = history_occurrences_calculator(data['data'][j]['RecentActivity'])
+                history = history_occurrences_catcher(data['data'][j]['RecentActivity'])
                 modify_sheet = sheet_all_modify_handler(ver, crash_count, history, spreadsheet_id, str(i+1), service)
                 print(modify_sheet)
                 temp_list_duplicate.append(j)
@@ -141,7 +143,6 @@ def fabric_crashlytics_uploader(tf_today, today, duplicate_list, data, spreadshe
     first_time_count = 0
     for i in range(0, len(data['data']), 1):
         ver = data['data'][i]['Version']
-        # h_occurrences = history_occurrences_calculator(data['data'][i]['RecentActivity'])
         if ver == User_Input.Top_build[0] and i not in duplicate_list:
             first_time_count += 1
             if first_time_count == 1 and tf_today is False:
@@ -151,7 +152,7 @@ def fabric_crashlytics_uploader(tf_today, today, duplicate_list, data, spreadshe
             crash_count = data['data'][i]['Crash'] + " / " + data['data'][i]['User']
             title = data['data'][i]['IssueTitle']
             sub_title = data['data'][i]['IssueSubtitle']
-            h_occurrences = history_occurrences_calculator(data['data'][i]['RecentActivity'])
+            h_occurrences = history_occurrences_catcher(data['data'][i]['RecentActivity'])
             append_sheet = sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, h_occurrences, spreadsheet_id, sheet_range, service)
             print(append_sheet)
 
@@ -164,7 +165,7 @@ def is_today_checker(today, sheet_range):
     return False
 
 
-def history_occurrences_calculator(RecentActivity):
+def history_occurrences_catcher(RecentActivity):
     temp_list_count = ''
     ver = ''
     for i in range(0, len(User_Input.Version), 1):
@@ -175,6 +176,58 @@ def history_occurrences_calculator(RecentActivity):
                 ver = ver + User_Input.Version[i][:ver_last - 1] + ', '
 
     return ver[:-2] + ' : ' + temp_list_count[:-2]
+
+
+def fabric_crashlytics_slope_criteria_uploader(tf_today, today, crash_rate_data, data, spreadsheet_id, sheet_range, service):
+    first_time_count = 0
+    for i in range(0, len(data['data']), 1):
+        h_occurrences = history_occurrences_catcher(data['data'][i]['RecentActivity'])
+        h_slope = history_occurrences_slope_calculator(h_occurrences, crash_rate_data)
+        if h_slope >= User_Input.Slope:
+            first_time_count += 1
+            if first_time_count == 1 and tf_today is False:
+                sheet_all_append_date(today.strftime("%Y/%m/%d"), spreadsheet_id, sheet_range, service)
+            ver = data['data'][i]['Version']
+            num = data['data'][i]['IssueNumber']
+            url = data['data'][i]['URL']
+            crash_count = data['data'][i]['Crash'] + " / " + data['data'][i]['User']
+            title = data['data'][i]['IssueTitle']
+            sub_title = data['data'][i]['IssueSubtitle']
+            append_sheet = sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, h_occurrences, spreadsheet_id, sheet_range, service)
+            print(append_sheet)
+
+
+def history_occurrences_slope_calculator(crash_count_list, crash_rate_data):
+    crash_count_list = crash_count_list.split(' : ')
+    ver_list = crash_count_list[0].split(', ')
+    crash_count_list = crash_count_list[1].split(', ')
+    if len(crash_count_list) == 1:
+        return 1
+    else:
+        for i in range(0, len(crash_count_list), 1):
+            if crash_count_list[i].find("k") != -1:
+                crash_count_list[i] = crash_count_list[i][:-1] + '000'
+
+        print(crash_count_list)
+        dau_list = []
+        for i in range(0, len(User_Input.Version)-1, 1):
+            ver_last = User_Input.Version[i].index('(')
+            ver = User_Input.Version[i][:ver_last - 1]
+            if ver in ver_list:
+                dau_list.append(crash_rate_data[User_Input.Version[i]]['User'])
+
+        print(dau_list)
+        temp_crash_rate = []
+        for i in range(0, len(crash_count_list), 1):
+            temp_crash_rate.append(float(crash_count_list[i]) / float(dau_list[i].replace(',', '')))
+
+        print(temp_crash_rate)
+        temp_slope_list = []
+        for i in range(0, len(temp_crash_rate)-1, 1):
+            temp_slope = float(temp_crash_rate[i]) / float(temp_crash_rate[i + 1])
+            temp_slope_list.append(temp_slope)
+
+        return max(temp_slope_list)
 
 
 def sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, h_occurrences, spreadsheet_id, sheet_range, service):
@@ -360,6 +413,7 @@ def main():
     is_today = is_today_checker(today, column_a_data)
     duplicated_list = fabric_crashlytics_modifier(column_a_data, crashlytics_dict, spreadsheet_id, service)
     fabric_crashlytics_uploader(is_today, today, duplicated_list, crashlytics_dict, spreadsheet_id, range_all, service)
+    fabric_crashlytics_slope_criteria_uploader(is_today, today, crash_rate_dict, crashlytics_dict, spreadsheet_id, range_all, service)
 
     # get Summary sheet column D data to find crash rate above 0.3% and mark as red
     summary_column_d_data = service.spreadsheets().values().get(spreadsheetId=spreadsheet_id,
