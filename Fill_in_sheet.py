@@ -92,13 +92,15 @@ def sheet_summary_append_handler(date, ver, crash_uv, crash_pv, spreadsheet_id, 
     return result
 
 
-def fabric_crashlytics_modifier(column_a_data, data, spreadsheet_id, sheet_range, service):
+def fabric_crashlytics_modifier(column_a_data, data, spreadsheet_id, service):
     temp_list_duplicate = []  # Temporary List to record the issue has been modified do not need raise again
     for i in range(0, len(column_a_data['values']), 1):
         for j in range(0, len(data['data']), 1):
             if column_a_data['values'][i][0] == data['data'][j]['IssueNumber']:
+                ver = data['data'][j]['Version']
                 crash_count = data['data'][j]['Crash'] + " / " + data['data'][j]['User']
-                modify_sheet = sheet_all_modify_handler(crash_count, spreadsheet_id, sheet_range + str(i+1), service)
+                history = history_occurrences_calculator(data['data'][j]['RecentActivity'])
+                modify_sheet = sheet_all_modify_handler(ver, crash_count, history, spreadsheet_id, str(i+1), service)
                 print(modify_sheet)
                 temp_list_duplicate.append(j)
 
@@ -106,15 +108,32 @@ def fabric_crashlytics_modifier(column_a_data, data, spreadsheet_id, sheet_range
     return temp_list_duplicate
 
 
-def sheet_all_modify_handler(data, spreadsheet_id, sheet_range, service):
-    value_range_body = {
-        'range': sheet_range,
-        'values': [
-            [data],
-        ]
+def sheet_all_modify_handler(data_ver, data_crash_count, data_history_occurrences, spreadsheet_id, sheet_range, service):
+    batch_update_values_request_body = {
+        'value_input_option': 'USER_ENTERED',
+        'data': [
+            {
+                'values': [
+                    [data_ver]
+                ],
+                'range': 'All!B' + sheet_range
+            },
+            {
+                'values': [
+                    [data_crash_count]
+                ],
+                'range': 'All!D' + sheet_range
+            },
+            {
+                'values': [
+                    [data_history_occurrences]
+                ],
+                'range': 'All!K' + sheet_range
+            }
+
+        ],
     }
-    result = service.spreadsheets().values().update(spreadsheetId=spreadsheet_id, range=sheet_range,
-                                                     valueInputOption='USER_ENTERED', body=value_range_body).execute()
+    result = service.spreadsheets().values().batchUpdate(spreadsheetId=spreadsheet_id, body=batch_update_values_request_body).execute()
     return result
 
 
@@ -339,7 +358,7 @@ def main():
 
     # upload detail crash data to All sheet
     is_today = is_today_checker(today, column_a_data)
-    duplicated_list = fabric_crashlytics_modifier(column_a_data, crashlytics_dict, spreadsheet_id, range_all_column_d, service)
+    duplicated_list = fabric_crashlytics_modifier(column_a_data, crashlytics_dict, spreadsheet_id, service)
     fabric_crashlytics_uploader(is_today, today, duplicated_list, crashlytics_dict, spreadsheet_id, range_all, service)
 
     # get Summary sheet column D data to find crash rate above 0.3% and mark as red
