@@ -32,6 +32,9 @@ try:
                         type=int)
     flags.add_argument('-t', '--test', nargs=1, action='store', choices=[0, 1], default=0,
                         help='0 for official spreadsheet, 1 for test spreadsheet, default=0', type=int)
+    flags.add_argument('-s', '--slope', nargs=1, action='store', default=1.2,
+                       help='If slope of crash count of the latest 5 versions above this value, it will be raised, default=1.2',
+                       type=float)
 except ImportError:
     flags = None
 
@@ -134,6 +137,7 @@ def get_parameter(para):
     Version = []
     Criteria_count = [100]
     test_flag = [0]
+    Slope = [1.2]
     Default_status = 'Open'
     Default_owner = 'Keith'
     spreadsheet_id = '1Gx_2izYogh-0PgEej-EtGJrYzUaL_Ci5N4OH0bQLblc'
@@ -158,6 +162,7 @@ def get_parameter(para):
     PlatformName = para.platform[0]
     Criteria_count = para.criteria[0]
     test_flag = para.test[0]
+    Slope = para.slope[0]
 
     # auto get latest 5 versions from PG_發版紀錄 spreadsheet
     if Top_build == [] or Version == []:
@@ -186,7 +191,7 @@ def get_parameter(para):
         sheet_id_all = Test['sheet_id_all']
         sheet_id_summary = Test['sheet_id_summary']
 
-    result = dict(plat=PlatformName, top=Top_build, ver=Version, cri=Criteria_count, test=test_flag, status=Default_status, owner=Default_owner, ssid=spreadsheet_id, sidall=sheet_id_all, sidsum=sheet_id_summary)
+    result = dict(plat=PlatformName, top=Top_build, ver=Version, cri=Criteria_count, test=test_flag, slope=Slope, status=Default_status, owner=Default_owner, ssid=spreadsheet_id, sidall=sheet_id_all, sidsum=sheet_id_summary)
     return result
 
 
@@ -201,6 +206,7 @@ def user_input_data(u_input):
     file.write('Top_build = ' + str(config['top']) + '\n')
     file.write('Version = ' + str(config['ver']) + '\n')
     file.write('Criteria_count = ' + str(config['cri']) + '\n')
+    file.write('Slope = ' + str(config['slope']) + '\n')
     file.write('Default_status = ' + '\'' + config['status'] + '\'' + '\n')
     file.write('Default_owner = ' + '\'' + config['owner'] + '\'' + '\n')
     file.write('spreadsheet_id = ' + '\'' + config['ssid'] + '\'' + '\n')
