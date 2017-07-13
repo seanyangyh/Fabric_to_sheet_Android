@@ -210,7 +210,7 @@ def history_occurrences_slope_calculator(crash_count_list, crash_rate_data):
 
         print(crash_count_list)
         dau_list = []
-        for i in range(0, len(User_Input.Version)-1, 1):
+        for i in range(0, len(User_Input.Version), 1):
             ver_last = User_Input.Version[i].index('(')
             ver = User_Input.Version[i][:ver_last - 1]
             if ver in ver_list:
@@ -227,6 +227,7 @@ def history_occurrences_slope_calculator(crash_count_list, crash_rate_data):
             temp_slope = float(temp_crash_rate[i]) / float(temp_crash_rate[i + 1])
             temp_slope_list.append(temp_slope)
 
+        print(temp_slope_list)
         return max(temp_slope_list)
 
 
