@@ -223,7 +223,7 @@ def history_occurrences_slope_calculator(crash_count_list, crash_rate_data):
         for i in range(0, len(crash_count_list), 1):
             if int(dau_list[i]) == 0:
                 dau_list[i] = int(dau_list[i]) + 1
-            temp_crash_rate.append(float(crash_count_list[i]) / float(dau_list[i].replace(',', '')))
+            temp_crash_rate.append(float(crash_count_list[i]) / float(str(dau_list[i]).replace(',', '')))
 
         print(temp_crash_rate)
         temp_slope_list = []
