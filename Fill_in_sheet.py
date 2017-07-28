@@ -144,7 +144,7 @@ def fabric_crashlytics_uploader(tf_today, today, duplicate_list, data, spreadshe
     for i in range(0, len(data['data']), 1):
         if i not in duplicate_list:
             ver = data['data'][i]['Version']
-            if ver == User_Input.Top_build[0]:
+            if ver in User_Input.Top_build[0].split('\n'):
                 first_time_count += 1
                 if first_time_count == 1 and tf_today is False:
                     sheet_all_append_date(today.strftime("%Y/%m/%d"), spreadsheet_id, sheet_range, service)
@@ -183,7 +183,7 @@ def history_occurrences_catcher(RecentActivity):
 def fabric_crashlytics_slope_criteria_uploader(tf_today, today, duplicate_list, crash_rate_data, data, spreadsheet_id, sheet_range, service):
     first_time_count = 0
     for i in range(0, len(data['data']), 1):
-        if i not in duplicate_list:
+        if i not in duplicate_list and data['data'][i]['Crash'] >= User_Input.Criteria_count:
             h_occurrences = history_occurrences_catcher(data['data'][i]['RecentActivity'])
             h_slope = history_occurrences_slope_calculator(h_occurrences, crash_rate_data)
             print(h_slope)
@@ -331,7 +331,7 @@ def fabric_warning_handler(column_d_data, spreadsheet_id, service):
         if not crash_user == []:
             temp = crash_user[0]
             crash_count = temp.strip().split(" / ")
-            if int(crash_count[0]) >= User_Input.Criteria_count:
+            if int(crash_count[0]) >= 100:
                 start_column = 0
                 end_column = 10
                 sheet_id = User_Input.sheet_id_all
