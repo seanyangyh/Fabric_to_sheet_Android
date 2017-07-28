@@ -183,7 +183,7 @@ def history_occurrences_catcher(RecentActivity):
 def fabric_crashlytics_slope_criteria_uploader(tf_today, today, duplicate_list, crash_rate_data, data, spreadsheet_id, sheet_range, service):
     first_time_count = 0
     for i in range(0, len(data['data']), 1):
-        if i not in duplicate_list and data['data'][i]['Crash'] >= User_Input.Criteria_count:
+        if i not in duplicate_list and int(data['data'][i]['Crash']) >= User_Input.Criteria_count:
             h_occurrences = history_occurrences_catcher(data['data'][i]['RecentActivity'])
             h_slope = history_occurrences_slope_calculator(h_occurrences, crash_rate_data)
             print(h_slope)
