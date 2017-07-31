@@ -244,16 +244,14 @@ def fabric_crashlytics_slope_criteria_uploader(tf_today, today, duplicate_list, 
 
 
 def history_crash_rate_slope_calculator(crash_rate_data):
-    if len(crash_rate_data) == 1:
+    crash_rate_data_filtered = [i for i in crash_rate_data if 'dau=0' not in i]
+    if len(crash_rate_data_filtered) == 1:
         return 1
     else:
         temp_slope_list = []
-        for i in range(0, len(crash_rate_data)-1, 1):
-            if crash_rate_data[i] == 'dau=0':
-                continue
-            else:
-                temp_slope = crash_rate_data[i] / crash_rate_data[i + 1]
-                temp_slope_list.append(temp_slope)
+        for i in range(0, len(crash_rate_data_filtered)-1, 1):
+            temp_slope = crash_rate_data_filtered[i] / crash_rate_data_filtered[i + 1]
+            temp_slope_list.append(temp_slope)
 
         print(temp_slope_list)
         return max(temp_slope_list)
@@ -296,7 +294,7 @@ def sheet_all_fill_color_and_merge(row, spreadsheet_id, service):
                         "startRowIndex": row-1,
                         "endRowIndex": row,
                         "startColumnIndex": 0,
-                        "endColumnIndex": 11
+                        "endColumnIndex": 12
                     },
                     "cell": {
                         "userEnteredFormat": {
@@ -317,7 +315,7 @@ def sheet_all_fill_color_and_merge(row, spreadsheet_id, service):
                         "startRowIndex": row-1,
                         "endRowIndex": row,
                         "startColumnIndex": 0,
-                        "endColumnIndex": 11
+                        "endColumnIndex": 12
                     },
                     "mergeType": "MERGE_ROWS"
                 }
