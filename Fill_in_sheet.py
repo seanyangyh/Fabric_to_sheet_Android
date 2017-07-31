@@ -214,12 +214,12 @@ def history_occurrences_catcher(RecentActivity, crash_rate_data):
         if temp_crash_rate[i] == 'dau=0':
             temp_crash_rate_percent = temp_crash_rate_percent + 'dau=0' + ', '
         else:
-            temp_percent = "{:.0%}".format(temp_crash_rate[i])
+            temp_percent = "{:.3%}".format(temp_crash_rate[i])
             temp_crash_rate_percent = temp_crash_rate_percent + temp_percent + ', '
 
     print(temp_ver + ' : ' + temp_list_count)
-    print(temp_ver + ' : ' + temp_crash_rate_percent)
-    return temp_ver + ' : ' + temp_list_count, temp_ver + ' : ' + temp_crash_rate_percent, temp_crash_rate
+    print(temp_ver + ' : ' + temp_crash_rate_percent[:-2])
+    return temp_ver + ' : ' + temp_list_count, temp_ver + ' : ' + temp_crash_rate_percent[:-2], temp_crash_rate
 
 
 def fabric_crashlytics_slope_criteria_uploader(tf_today, today, duplicate_list, crash_rate_data, data, spreadsheet_id, sheet_range, service):
@@ -249,8 +249,11 @@ def history_crash_rate_slope_calculator(crash_rate_data):
     else:
         temp_slope_list = []
         for i in range(0, len(crash_rate_data)-1, 1):
-            temp_slope = crash_rate_data[i] / crash_rate_data[i + 1]
-            temp_slope_list.append(temp_slope)
+            if crash_rate_data[i] == 'dau=0':
+                continue
+            else:
+                temp_slope = crash_rate_data[i] / crash_rate_data[i + 1]
+                temp_slope_list.append(temp_slope)
 
         print(temp_slope_list)
         return max(temp_slope_list)
