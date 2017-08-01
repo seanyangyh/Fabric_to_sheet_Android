@@ -351,11 +351,14 @@ def fabric_warning_handler(column_d_data, spreadsheet_id, service):
         if not crash_user == []:
             temp = crash_user[0]
             crash_count = temp.strip().split(" / ")
+            start_column = 0
+            end_column = 12
+            sheet_id = User_Input.sheet_id_all
             if int(crash_count[0]) >= 100:
-                start_column = 0
-                end_column = 10
-                sheet_id = User_Input.sheet_id_all
                 update_text_color = sheet_update_text_color(i+2, start_column, end_column, 1, 0, 0, sheet_id, spreadsheet_id, service)
+                print(update_text_color)
+            else:
+                update_text_color = sheet_update_text_color(i+2, start_column, end_column, 0, 0, 0, sheet_id, spreadsheet_id, service)
                 print(update_text_color)
 
 
