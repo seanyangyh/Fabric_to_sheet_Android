@@ -205,8 +205,8 @@ def history_occurrences_catcher(RecentActivity, crash_rate_data):
         if dau_list[i] == 0:
             temp_crash_rate.append('dau=0')
         else:
-            dau_list[i] = float(dau_list[i].replace(',', ''))
-            temp_crash_rate.append(float(crash_count_list[i]) / dau_list[i])
+            dau_list[i] = dau_list[i].replace(',', '')
+            temp_crash_rate.append(str(float(crash_count_list[i]) / float(dau_list[i])))
 
     print(temp_crash_rate)
     temp_crash_rate_percent = ''
@@ -214,7 +214,7 @@ def history_occurrences_catcher(RecentActivity, crash_rate_data):
         if temp_crash_rate[i] == 'dau=0':
             temp_crash_rate_percent = temp_crash_rate_percent + 'dau=0' + ', '
         else:
-            temp_percent = "{:.3%}".format(temp_crash_rate[i])
+            temp_percent = "{:.2%}".format(float(temp_crash_rate[i]))
             temp_crash_rate_percent = temp_crash_rate_percent + temp_percent + ', '
 
     print(temp_ver + ' : ' + temp_list_count)
@@ -250,7 +250,7 @@ def history_crash_rate_slope_calculator(crash_rate_data):
     else:
         temp_slope_list = []
         for i in range(0, len(crash_rate_data_filtered)-1, 1):
-            temp_slope = crash_rate_data_filtered[i] / crash_rate_data_filtered[i + 1]
+            temp_slope = float(crash_rate_data_filtered[i]) / float(crash_rate_data_filtered[i + 1])
             temp_slope_list.append(temp_slope)
 
         print(temp_slope_list)
