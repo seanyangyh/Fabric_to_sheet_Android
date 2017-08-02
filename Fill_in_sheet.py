@@ -5,7 +5,7 @@ import os
 import datetime
 import User_Input
 import json
-# from time import sleep
+from time import sleep
 
 from apiclient import discovery
 from oauth2client import client
@@ -143,6 +143,7 @@ def sheet_all_modify_handler(data_ver, data_crash_count, data_history_occurrence
         ],
     }
     result = service.spreadsheets().values().batchUpdate(spreadsheetId=spreadsheet_id, body=batch_update_values_request_body).execute()
+    sleep(1)
     return result
 
 
@@ -266,6 +267,7 @@ def sheet_all_append_handler(num, ver, url, crash_count, title, sub_title, h_occ
     }
     result = service.spreadsheets().values().append(spreadsheetId=spreadsheet_id, range=sheet_range,
                                                      valueInputOption='USER_ENTERED', body=value_range_body).execute()
+    sleep(1)
     return result
 
 
@@ -405,6 +407,7 @@ def sheet_update_text_color(start_row, end_row, start_column, end_column, red, g
     }
     result = service.spreadsheets().batchUpdate(spreadsheetId=spreadsheet_id,
                                                 body=batch_update_spreadsheet_request_color).execute()
+    sleep(1)
     return result
 
 
