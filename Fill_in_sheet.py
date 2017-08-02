@@ -188,7 +188,7 @@ def history_occurrences_catcher(RecentActivity, crash_rate_data):
     temp_list_count = temp_list_count[:-2]
     crash_count_list = temp_list_count.split(', ')
     for i in range(0, len(crash_count_list), 1):
-        crash_count_list[i].replace('k', '000')
+        crash_count_list[i] = crash_count_list[i].replace('k', '000')
         # if crash_count_list[i].find("k") != -1:
             # crash_count_list[i] = crash_count_list[i][:-1] + '000'
 
