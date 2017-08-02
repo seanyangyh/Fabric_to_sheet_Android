@@ -27,14 +27,16 @@ try:
     flags = argparse.ArgumentParser(prog=['Jenkins_gen_config'], parents=[tools.argparser])
     flags.add_argument('-p', '--platform', nargs=1, action='store', choices=['iOS', 'Android'], default='iOS',
                         help='Platform selection: iOS or AND, default=iOS')
-    flags.add_argument('-c', '--criteria', nargs=1, action='store', default=100,
-                        help='Warning color, if above this num, text will be filled in red color, default=100',
+    flags.add_argument('-c', '--criteria', nargs=1, action='store', default=30,
+                        help='Slope method filtered below X times crashes, default=30',
                         type=int)
     flags.add_argument('-t', '--test', nargs=1, action='store', choices=[0, 1], default=0,
                         help='0 for official spreadsheet, 1 for test spreadsheet, default=0', type=int)
     flags.add_argument('-s', '--slope', nargs=1, action='store', default=1.2,
                        help='If slope of crash count of the latest 5 versions above this value, it will be raised, default=1.2',
                        type=float)
+    flags.add_argument('-v', '--version', nargs=1, action='store', default=1,
+                       help='Run fabric automation N times for latest N versions. default=1', type=int)
 except ImportError:
     flags = None
 
@@ -138,6 +140,7 @@ def get_parameter(para):
     Criteria_count = [100]
     test_flag = [0]
     Slope = [1.2]
+    Latest_version = 1
     Default_status = 'Open'
     Default_owner = 'Keith'
     spreadsheet_id = '1Gx_2izYogh-0PgEej-EtGJrYzUaL_Ci5N4OH0bQLblc'
@@ -163,15 +166,16 @@ def get_parameter(para):
     Criteria_count = para.criteria[0]
     test_flag = para.test[0]
     Slope = para.slope[0]
+    Latest_version = para.version[0]
 
     # auto get latest 5 versions from PG_發版紀錄 spreadsheet
     if Top_build == [] or Version == []:
         if PlatformName == 'iOS':
             Version = get_iOS_sheet_version(release_spreadsheet_id, range_iOS, service)
-            Top_build.append(Version[0])
+            Top_build.append(Version[Latest_version-1])
         if PlatformName == 'Android':
             Version = get_Android_sheet_version(release_spreadsheet_id, range_Android, service)
-            Top_build.append(Version[0])
+            Top_build.append(Version[Latest_version-1])
 
     if PlatformName == 'iOS':
         Default_status = iOS['default_status']

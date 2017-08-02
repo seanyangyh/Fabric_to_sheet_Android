@@ -328,6 +328,15 @@ def sheet_all_fill_color_and_merge(row, spreadsheet_id, service):
 
 
 def crash_rate_warning_handler(column_d_data, spreadsheet_id, service):
+    start_row = 0
+    end_row = 99
+    start_column = 3
+    end_column = 4
+    sheet_id = User_Input.sheet_id_summary
+    update_text_color_all = sheet_update_text_color(start_row, end_row, start_column, end_column, 0, 0, 0, sheet_id,
+                                                    spreadsheet_id, service)
+    print(update_text_color_all)
+
     for i in range(0, len(column_d_data), 1):
         crash_rate = column_d_data[i]
         print(crash_rate)
@@ -338,14 +347,20 @@ def crash_rate_warning_handler(column_d_data, spreadsheet_id, service):
             end_column = 4
             sheet_id = User_Input.sheet_id_summary
             if float(crash_rate_value) <= 99.7:
-                update_text_color = sheet_update_text_color(i+2, start_column, end_column, 1, 0, 0, sheet_id, spreadsheet_id, service)
-                print(update_text_color)
-            else:
-                update_text_color = sheet_update_text_color(i+2, start_column, end_column, 0, 0, 0, sheet_id, spreadsheet_id, service)
+                update_text_color = sheet_update_text_color(i+1, i+2, start_column, end_column, 1, 0, 0, sheet_id, spreadsheet_id, service)
                 print(update_text_color)
 
 
 def fabric_warning_handler(column_d_data, spreadsheet_id, service):
+    start_row = 0
+    end_row = 999
+    start_column = 0
+    end_column = 12
+    sheet_id = User_Input.sheet_id_all
+    update_text_color_all = sheet_update_text_color(start_row, end_row, start_column, end_column, 0, 0, 0, sheet_id,
+                                                    spreadsheet_id, service)
+    print(update_text_color_all)
+
     for i in range(0, len(column_d_data), 1):
         crash_user = column_d_data[i]
         if not crash_user == []:
@@ -355,22 +370,19 @@ def fabric_warning_handler(column_d_data, spreadsheet_id, service):
             end_column = 12
             sheet_id = User_Input.sheet_id_all
             if int(crash_count[0]) >= 100:
-                update_text_color = sheet_update_text_color(i+2, start_column, end_column, 1, 0, 0, sheet_id, spreadsheet_id, service)
-                print(update_text_color)
-            else:
-                update_text_color = sheet_update_text_color(i+2, start_column, end_column, 0, 0, 0, sheet_id, spreadsheet_id, service)
+                update_text_color = sheet_update_text_color(i+1, i+2, start_column, end_column, 1, 0, 0, sheet_id, spreadsheet_id, service)
                 print(update_text_color)
 
 
-def sheet_update_text_color(row, start_column, end_column, red, green, blue, sheet_id, spreadsheet_id, service):
+def sheet_update_text_color(start_row, end_row, start_column, end_column, red, green, blue, sheet_id, spreadsheet_id, service):
     batch_update_spreadsheet_request_color = {
         "requests": [
             {
                 "repeatCell": {
                     "range": {
                         "sheetId": sheet_id,
-                        "startRowIndex": row - 1,
-                        "endRowIndex": row,
+                        "startRowIndex": start_row,
+                        "endRowIndex": end_row,
                         "startColumnIndex": start_column,
                         "endColumnIndex": end_column
                     },
