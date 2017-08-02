@@ -188,8 +188,9 @@ def history_occurrences_catcher(RecentActivity, crash_rate_data):
     temp_list_count = temp_list_count[:-2]
     crash_count_list = temp_list_count.split(', ')
     for i in range(0, len(crash_count_list), 1):
-        if crash_count_list[i].find("k") != -1:
-            crash_count_list[i] = crash_count_list[i][:-1] + '000'
+        crash_count_list[i].replace('k', '000')
+        # if crash_count_list[i].find("k") != -1:
+            # crash_count_list[i] = crash_count_list[i][:-1] + '000'
 
     print(crash_count_list)
     dau_list = []
@@ -225,7 +226,7 @@ def history_occurrences_catcher(RecentActivity, crash_rate_data):
 def fabric_crashlytics_slope_criteria_uploader(tf_today, today, duplicate_list, crash_rate_data, data, spreadsheet_id, sheet_range, service):
     first_time_count = 0
     for i in range(0, len(data['data']), 1):
-        if i not in duplicate_list and int(data['data'][i]['Crash']) >= User_Input.Criteria_count:
+        if i not in duplicate_list and int(data['data'][i]['Crash'].replace('k', '000')) >= User_Input.Criteria_count:
             h_occurrences, h_crash_rate_percent, h_crash_rate = history_occurrences_catcher(data['data'][i]['RecentActivity'], crash_rate_data)
             h_slope = history_crash_rate_slope_calculator(h_crash_rate)
             print(h_slope)
