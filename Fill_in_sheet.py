@@ -167,7 +167,7 @@ def fabric_crashlytics_uploader(tf_today, today, duplicate_list, crash_rate_data
 
 
 def is_today_exist_checker(today, sheet_range):
-    for i in range(0, len(sheet_range['values']), 1):
+    for i in range(0, len(sheet_range['values']-1), 1):
         if sheet_range['values'][i][0] == today.strftime("%Y/%m/%d"):
             return True
 
