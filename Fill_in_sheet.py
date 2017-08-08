@@ -97,7 +97,7 @@ def sheet_summary_append_handler(date, ver, crash_uv, crash_pv, dau, spreadsheet
 
 def fabric_crashlytics_modifier(column_a_data, crash_rate_data, data, spreadsheet_id, service):
     temp_list_duplicate = []  # Temporary List to record the issue has been modified do not need raise again
-    for i in range(0, len(column_a_data['values']), 1):
+    for i in range(0, len(column_a_data['values'])-1, 1):
         for j in range(0, len(data['data']), 1):
             if column_a_data['values'][i][0] == data['data'][j]['IssueNumber']:
                 ver = data['data'][j]['Version']
@@ -167,7 +167,7 @@ def fabric_crashlytics_uploader(tf_today, today, duplicate_list, crash_rate_data
 
 
 def is_today_exist_checker(today, sheet_range):
-    for i in range(0, len(sheet_range['values']-1), 1):
+    for i in range(0, len(sheet_range['values'])-1, 1):
         if sheet_range['values'][i][0] == today.strftime("%Y/%m/%d"):
             return True
 
