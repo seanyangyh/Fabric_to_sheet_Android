@@ -204,7 +204,7 @@ def history_occurrences_catcher(RecentActivity, crash_rate_data):
     print(dau_list)
     temp_crash_rate = []
     for i in range(0, len(crash_count_list), 1):
-        if dau_list[i] == 0:
+        if dau_list[i] == '0':
             temp_crash_rate.append('dau=0')
         else:
             dau_list[i] = dau_list[i].replace(',', '')
