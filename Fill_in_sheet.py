@@ -247,7 +247,7 @@ def fabric_crashlytics_slope_criteria_uploader(tf_today, today, duplicate_list, 
 
 def history_crash_rate_slope_calculator(crash_rate_data):
     crash_rate_data_filtered = [i for i in crash_rate_data if 'dau=0' not in i]
-    if len(crash_rate_data_filtered) == 1:
+    if len(crash_rate_data_filtered) == 0 or 1:
         return 1
     else:
         temp_slope_list = []
