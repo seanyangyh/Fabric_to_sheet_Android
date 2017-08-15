@@ -97,51 +97,60 @@ def sheet_summary_append_handler(date, ver, crash_uv, crash_pv, dau, spreadsheet
 
 
 def fabric_crashlytics_modifier(column_a_data, crash_rate_data, data, spreadsheet_id, service):
-    temp_list_duplicate = []  # Temporary List to record the issue has been modified do not need raise again
+    temp_duplicate_list = []  # Temporary List to record the issue has been modified do not need raise again
+    multiple_batchUpdate_list = []
     for i in range(0, len(column_a_data['values']), 1):
         for j in range(0, len(data['data']), 1):
             if column_a_data['values'][i][0] == data['data'][j]['IssueNumber']:
                 ver = data['data'][j]['Version']
                 crash_count = data['data'][j]['Crash'] + " / " + data['data'][j]['User']
                 h_occurrences, h_crash_rate_percent, h_crash_rate = history_occurrences_catcher(data['data'][j]['RecentActivity'], crash_rate_data)
-                modify_sheet = sheet_all_modify_handler(ver, crash_count, h_occurrences, h_crash_rate_percent, spreadsheet_id, str(i+1), service)
-                print(modify_sheet)
-                temp_list_duplicate.append(j)
+                multiple_batchUpdate_list.append(sheet_all_modify_row_data(ver, crash_count, h_crash_rate_percent, h_occurrences, str(i+1)))
+                temp_duplicate_list.append(j)
 
-    print(temp_list_duplicate)
-    return temp_list_duplicate
+    modify_sheet = sheet_all_modify_handler(multiple_batchUpdate_list, spreadsheet_id, service)
+    print(modify_sheet)
+    print(temp_duplicate_list)
+    return temp_duplicate_list
 
 
-def sheet_all_modify_handler(data_ver, data_crash_count, data_history_occurrences, data_history_crash_rate, spreadsheet_id, sheet_range, service):
+def sheet_all_modify_row_data(data_ver, data_crash_count, data_history_crash_rate, data_history_occurrences, sheet_range):
+    data = [
+        {
+            'values': [
+                [data_ver]
+            ],
+            'range': 'All!B' + sheet_range
+        },
+        {
+            'values': [
+                [data_crash_count]
+            ],
+            'range': 'All!D' + sheet_range
+        },
+        {
+            'values': [
+                [data_history_crash_rate]
+            ],
+            'range': 'All!K' + sheet_range
+        },
+        {
+            'values': [
+                [data_history_occurrences]
+            ],
+            'range': 'All!L' + sheet_range
+        }
+    ]
+
+    return data
+
+
+def sheet_all_modify_handler(all_data, spreadsheet_id, service):
     batch_update_values_request_body = {
         'value_input_option': 'USER_ENTERED',
         'data': [
-            {
-                'values': [
-                    [data_ver]
-                ],
-                'range': 'All!B' + sheet_range
-            },
-            {
-                'values': [
-                    [data_crash_count]
-                ],
-                'range': 'All!D' + sheet_range
-            },
-            {
-                'values': [
-                    [data_history_crash_rate]
-                ],
-                'range': 'All!K' + sheet_range
-            },
-            {
-                'values': [
-                    [data_history_occurrences]
-                ],
-                'range': 'All!L' + sheet_range
-            }
-
-        ],
+            all_data
+        ]
     }
     result = service.spreadsheets().values().batchUpdate(spreadsheetId=spreadsheet_id, body=batch_update_values_request_body).execute()
     sleep(1)
